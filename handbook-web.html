@@ -603,6 +603,80 @@
       border-left: 4px solid #be185d;
     }
 
+    .solution-collapse {
+      margin: 14px 0 20px;
+      border: 1px solid #d8e5ff;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #f8fbff 0%, #f2f7ff 100%);
+      box-shadow: 0 6px 18px rgba(37, 87, 214, 0.08);
+      overflow: hidden;
+    }
+
+    .solution-collapse > summary {
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #173a82;
+      font-weight: 700;
+      font-size: 14px;
+      border-bottom: 1px solid transparent;
+    }
+
+    .solution-collapse > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .solution-collapse .collapse-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .solution-collapse .collapse-title::before {
+      content: ">";
+      display: inline-block;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      color: #315eaf;
+      transform-origin: center;
+      transition: transform 0.18s ease;
+    }
+
+    .solution-collapse[open] .collapse-title::before {
+      transform: rotate(90deg);
+    }
+
+    .solution-collapse .collapse-meta {
+      color: #4a618f;
+      background: #e7f0ff;
+      border: 1px solid #d4e3ff;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .solution-collapse[open] > summary {
+      border-bottom-color: #d7e4ff;
+      background: #edf3ff;
+    }
+
+    .collapse-content {
+      padding: 12px 14px 6px;
+      background: #ffffff;
+    }
+
+    .collapse-content > :first-child {
+      margin-top: 0;
+    }
+
     @media (max-width: 1024px) {
       .page {
         grid-template-columns: 1fr;
@@ -684,6 +758,7 @@
           breaks: false
         });
         contentEl.innerHTML = html;
+        enhanceCollapsibleSolutionBlocks();
         applySyntaxHighlighting();
         enhanceDocumentDesign();
         addCopyButtonsToCodeBlocks();
@@ -832,6 +907,89 @@
 
         node.classList.add("doc-card-list");
         node.classList.toggle("ordered", node.tagName === "OL");
+      });
+    }
+
+    function shouldCollapseNode(node) {
+      const text = node.textContent.trim().replace(/\s+/g, " ").toLowerCase();
+
+      const isTargetText =
+        /complete\s+reference\s+solutiona?/.test(text) ||
+        /complete\s+reference\s+solution/.test(text) ||
+        /complete\s+working\s+solution/.test(text) ||
+        /expected\s+output/.test(text);
+
+      if (!isTargetText) return false;
+
+      const isHeading = /^H[2-6]$/.test(node.tagName);
+      const isBoldParagraph =
+        node.tagName === "P" &&
+        node.firstElementChild &&
+        node.firstElementChild.tagName === "STRONG";
+
+      return isHeading || isBoldParagraph;
+    }
+
+    function getTriggerTitle(node) {
+      const raw = node.textContent.trim().replace(/\s+/g, " ");
+      return raw.replace(/:+$/, "");
+    }
+
+    function getHeadingLevel(node) {
+      if (!/^H[2-6]$/.test(node.tagName)) return 6;
+      return Number(node.tagName.slice(1));
+    }
+
+    function collectCollapsibleContent(triggerNode, triggerLevel) {
+      const nodes = [];
+      let current = triggerNode.nextElementSibling;
+
+      while (current) {
+        const next = current.nextElementSibling;
+
+        if (current.tagName === "HR") break;
+
+        if (/^H[2-6]$/.test(current.tagName)) {
+          const level = Number(current.tagName.slice(1));
+          if (level <= triggerLevel) break;
+        }
+
+        nodes.push(current);
+        current = next;
+      }
+
+      return nodes;
+    }
+
+    function enhanceCollapsibleSolutionBlocks() {
+      const allNodes = Array.from(contentEl.querySelectorAll("h2, h3, h4, h5, h6, p"));
+
+      allNodes.forEach((node) => {
+        if (!node.isConnected) return;
+        if (!shouldCollapseNode(node)) return;
+        if (node.closest(".solution-collapse")) return;
+
+        const triggerLevel = getHeadingLevel(node);
+        const title = getTriggerTitle(node);
+        const contentNodes = collectCollapsibleContent(node, triggerLevel);
+        if (!contentNodes.length) return;
+
+        const details = document.createElement("details");
+        details.className = "solution-collapse";
+
+        const summary = document.createElement("summary");
+        summary.innerHTML = `
+          <span class="collapse-title">${title}</span>
+          <span class="collapse-meta">Click to expand</span>
+        `;
+
+        const body = document.createElement("div");
+        body.className = "collapse-content";
+        contentNodes.forEach((entry) => body.appendChild(entry));
+
+        details.appendChild(summary);
+        details.appendChild(body);
+        node.replaceWith(details);
       });
     }
 
