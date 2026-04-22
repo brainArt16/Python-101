@@ -1,61 +1,49 @@
 # Python 101 for Pharmacists
 
-Modern, web-styled handbook built from Markdown.
+Welcome to a beginner-friendly Python handbook designed for pharmacists and pharmacy students.
 
-This project contains:
+No programming background is required.
 
-- `handbook.md` - the full handbook source content
-- `handbook-web.html` - interactive web viewer (modern UI, TOC, code highlighting, copy buttons, collapsible solutions/outputs)
+## What You Will Learn
 
-## Run Locally
+By working through this handbook, you will learn how to:
 
-1. Open a terminal in this folder:
+- Understand core Python basics (variables, data types, operators)
+- Work with strings, lists, dictionaries, and sets
+- Write logic with conditionals and loops
+- Build reusable functions
+- Read from and write to files
+- Handle errors safely in your programs
 
-   ```bash
-   cd "/home/brainart/Desktop/Python 101"
-   ```
+## Pharmacy-Focused Skills You Will Build
 
-2. Start a local web server:
+You will practice Python using real pharmacy-style scenarios, including:
 
-   ```bash
-   python3 -m http.server 8000
-   ```
+- Dose calculations
+- Medication list management
+- Prescription label formatting
+- Basic patient data handling
+- Dose safety checks and alerts
 
-3. Open in your browser:
+## Projects You Will Complete
 
-   [http://localhost:8000/handbook-web.html](http://localhost:8000/handbook-web.html)
+You will build practical mini-projects as you progress:
 
-## How It Works
+1. **Medication Tracker**
+2. **Prescription Label Generator**
+3. **Dose Safety Checker**
+4. **Final Integrated Pharmacy Management Challenge**
 
-- `handbook-web.html` loads `handbook.md` dynamically in the browser.
-- Markdown is rendered using `marked.js`.
-- Code snippets are highlighted with `highlight.js`.
-- Additional UI enhancements are applied at runtime:
-  - styled table of contents with active section tracking
-  - card-based visual components across sections
-  - IDE-like code blocks with copy action
-  - collapsible sections for:
-    - Complete Working Solution
-    - Complete Reference Solution
-    - Expected Output
+Each project helps you combine concepts from earlier chapters into something useful and realistic.
 
-## Deploy (Share Online)
+## How to Study This Handbook
 
-### Option 1: GitHub Pages
+- Follow chapters in order
+- Try every code example yourself
+- Complete each quiz before checking answers
+- Attempt each challenge before reading the reference solution
+- Revisit difficult chapters and practice again
 
-1. Push this folder to a GitHub repository.
-2. Go to **Settings -> Pages**.
-3. Choose **Deploy from a branch**.
-4. Select `main` branch and `/ (root)` folder.
-5. Open the generated Pages URL.
+## What You Can Do After Finishing
 
-### Option 2: Netlify
-
-1. Go to [https://app.netlify.com/drop](https://app.netlify.com/drop)
-2. Drag and drop this project folder.
-3. Netlify gives you a live URL instantly.
-
-## Notes
-
-- Use a local server (not `file://`) so `fetch("./handbook.md")` works correctly.
-- After editing `handbook.md` or `handbook-web.html`, refresh the browser to see changes.
+By the end, you will be able to write Python scripts that support everyday pharmacy workflows and automate repetitive tasks with confidence.
