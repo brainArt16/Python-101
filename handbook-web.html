@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python 101 for Pharmacists</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-muted: #f7f9fc;
+      --text: #142033;
+      --text-muted: #5a667a;
+      --border: #dce4f1;
+      --brand: #2557d6;
+      --brand-strong: #163d9d;
+      --shadow: 0 12px 32px rgba(22, 33, 58, 0.08);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, sans-serif;
+      line-height: 1.7;
+      min-height: 100%;
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      height: calc(100vh - 40px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 18px 16px;
+      overflow: auto;
+    }
+
+    .brand {
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand h1 {
+      font-size: 15px;
+      line-height: 1.4;
+      margin: 0 0 6px;
+      color: var(--brand-strong);
+      letter-spacing: 0.01em;
+    }
+
+    .brand p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .toc {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+
+    .toc-header {
+      margin-bottom: 14px;
+      padding: 10px 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f4f8ff 100%);
+    }
+
+    .toc-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .toc-title {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: #2a3b5f;
+      text-transform: uppercase;
+    }
+
+    .toc-count {
+      font-size: 11px;
+      font-weight: 600;
+      color: #36548c;
+      background: #e8f0ff;
+      border: 1px solid #d6e4ff;
+      border-radius: 999px;
+      padding: 2px 8px;
+    }
+
+    .toc-subtitle {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .toc a {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      position: relative;
+    }
+
+    .toc-bullet {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      margin-top: 8px;
+      flex-shrink: 0;
+      background: #b7c4db;
+      box-shadow: 0 0 0 3px rgba(183, 196, 219, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .toc-label {
+      min-width: 0;
+      line-height: 1.4;
+    }
+
+    .toc a:hover {
+      color: var(--brand-strong);
+      background: #edf3ff;
+      border-color: #dbe8ff;
+      transform: translateX(2px);
+    }
+
+    .toc .active a {
+      color: #13357f;
+      background: #e8f0ff;
+      border-color: #cfe0ff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .toc .active .toc-bullet {
+      background: var(--brand);
+      box-shadow: 0 0 0 3px rgba(37, 87, 214, 0.2);
+    }
+
+    .toc .level-3 a {
+      padding-left: 22px;
+      font-size: 12px;
+      color: #63708a;
+    }
+
+    .toc .level-3 .toc-bullet {
+      width: 6px;
+      height: 6px;
+      margin-top: 7px;
+    }
+
+    .content-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      min-height: calc(100vh - 40px);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+    }
+
+    .pill {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand-strong);
+      background: #e9f1ff;
+      border: 1px solid #d5e4ff;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.01em;
+    }
+
+    .topbar .meta {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 34px;
+    }
+
+    .loading,
+    .error {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface-muted);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: #0d1b34;
+      line-height: 1.25;
+      scroll-margin-top: 92px;
+      letter-spacing: -0.01em;
+    }
+
+    h1 {
+      font-size: clamp(32px, 4.2vw, 44px);
+      margin: 0 0 12px;
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: clamp(24px, 2.8vw, 32px);
+      margin-top: 48px;
+      margin-bottom: 14px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
+      font-weight: 750;
+    }
+
+    h3 {
+      font-size: 21px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 16px;
+      color: var(--text);
+    }
+
+    ul,
+    ol {
+      margin: 0 0 18px;
+      padding-left: 22px;
+    }
+
+    li {
+      margin-bottom: 7px;
+    }
+
+    a {
+      color: var(--brand);
+    }
+
+    a:hover {
+      color: var(--brand-strong);
+    }
+
+    blockquote {
+      margin: 18px 0;
+      padding: 10px 14px;
+      border-left: 4px solid #a9c4ff;
+      background: #f3f8ff;
+      border-radius: 0 10px 10px 0;
+      color: #1a305d;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 30px 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", monospace;
+      background: #eef2f9;
+      border: 1px solid #dce3ef;
+      border-radius: 7px;
+      padding: 1px 6px;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+      margin: 16px 0 24px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    pre code {
+      background: transparent;
+      border: 0;
+      color: inherit;
+      padding: 0;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 16px 0 24px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f6f9ff;
+      font-weight: 650;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .reason-cards {
+      display: block;
+      margin: 12px 0 24px;
+    }
+
+    .reason-card {
+      border: 1px solid var(--border);
+      border-radius: 0;
+      padding: 14px 14px 12px;
+      background: #f8fbff;
+      box-shadow: 0 6px 18px rgba(22, 33, 58, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border-top: 4px solid var(--card-accent, #7ea4ff);
+    }
+
+    .reason-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(22, 33, 58, 0.1);
+    }
+
+    .reason-card-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .reason-card-index {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--card-accent, #3157b6);
+      background: var(--card-chip, #e8f0ff);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 999px;
+      padding: 2px 7px;
+      letter-spacing: 0.05em;
+    }
+
+    .reason-card h4 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.3;
+      color: #11274f;
+    }
+
+    .reason-card p {
+      margin: 0;
+      color: #2f3e58;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .reason-card:nth-child(1) {
+      --card-accent: #2563eb;
+      --card-chip: #e8f0ff;
+      background: linear-gradient(180deg, #f5f9ff 0%, #eef4ff 100%);
+    }
+
+    .reason-card:nth-child(2) {
+      --card-accent: #0f766e;
+      --card-chip: #e6faf6;
+      background: linear-gradient(180deg, #f4fdfb 0%, #ecfaf6 100%);
+    }
+
+    .reason-card:nth-child(3) {
+      --card-accent: #7c3aed;
+      --card-chip: #f2ebff;
+      background: linear-gradient(180deg, #f9f6ff 0%, #f2ecff 100%);
+    }
+
+    .reason-card:nth-child(4) {
+      --card-accent: #ea580c;
+      --card-chip: #fff0e7;
+      background: linear-gradient(180deg, #fff8f3 0%, #fff1e8 100%);
+    }
+
+    .reason-card:nth-child(5) {
+      --card-accent: #be185d;
+      --card-chip: #ffeaf3;
+      background: linear-gradient(180deg, #fff6fb 0%, #ffeef7 100%);
+    }
+
+    @media (max-width: 1024px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        max-height: 42vh;
+      }
+
+      main {
+        padding: 24px;
+      }
+
+      .reason-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Python 101 for Pharmacists</h1>
+        <p>Modern reader view</p>
+      </div>
+      <div class="toc-header">
+        <div class="toc-title-row">
+          <p class="toc-title">Contents</p>
+          <span class="toc-count" id="tocCount">0</span>
+        </div>
+        <p class="toc-subtitle">Follow your progress chapter by chapter.</p>
+      </div>
+      <ul class="toc" id="toc"></ul>
+    </aside>
+
+    <section class="content-wrap">
+      <div class="topbar">
+        <span class="pill">Interactive Handbook</span>
+        <span class="meta">Source: <code>handbook.md</code></span>
+      </div>
+      <main id="content">
+        <div class="loading">Loading handbook content...</div>
+      </main>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const contentEl = document.getElementById("content");
+    const tocEl = document.getElementById("toc");
+    const tocCountEl = document.getElementById("tocCount");
+
+    const slugify = (text) =>
+      text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-");
+
+    async function loadHandbook() {
+      try {
+        const response = await fetch("./handbook.md");
+        if (!response.ok) {
+          throw new Error("Could not load handbook.md");
+        }
+
+        const markdown = await response.text();
+        const html = marked.parse(markdown, {
+          gfm: true,
+          breaks: false
+        });
+        contentEl.innerHTML = html;
+        enhanceWhyPythonSection();
+
+        const headings = contentEl.querySelectorAll("h2, h3");
+        headings.forEach((heading) => {
+          if (!heading.id) {
+            heading.id = slugify(heading.textContent);
+          }
+        });
+
+        buildToc(headings);
+        observeHeadings(headings);
+      } catch (err) {
+        contentEl.innerHTML =
+          '<div class="error"><strong>Could not load <code>handbook.md</code>.</strong><br/>Open this folder in a local server first:<br/><code>python3 -m http.server</code><br/>Then visit <code>http://localhost:8000/handbook-web.html</code>.</div>';
+      }
+    }
+
+    function buildToc(headings) {
+      tocEl.innerHTML = "";
+      tocCountEl.textContent = headings.length;
+
+      headings.forEach((heading) => {
+        const li = document.createElement("li");
+        li.className = heading.tagName.toLowerCase() === "h3" ? "level-3" : "level-2";
+        li.dataset.target = heading.id;
+
+        const link = document.createElement("a");
+        link.href = "#" + heading.id;
+
+        const bullet = document.createElement("span");
+        bullet.className = "toc-bullet";
+        bullet.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("span");
+        label.className = "toc-label";
+        label.textContent = heading.textContent;
+
+        link.appendChild(bullet);
+        link.appendChild(label);
+        li.appendChild(link);
+        tocEl.appendChild(li);
+      });
+    }
+
+    function enhanceWhyPythonSection() {
+      const targetHeading = Array.from(contentEl.querySelectorAll("h3")).find(
+        (h) => h.textContent.trim().toLowerCase() === "why python for pharmacists?"
+      );
+
+      if (!targetHeading) return;
+
+      const reasonParagraphs = [];
+      let node = targetHeading.nextElementSibling;
+
+      while (node) {
+        const next = node.nextElementSibling;
+
+        if (node.tagName === "H2" || node.tagName === "H3") break;
+        if (node.tagName === "HR") break;
+
+        if (node.tagName === "P") {
+          const firstChild = node.firstElementChild;
+          if (firstChild && firstChild.tagName === "STRONG") {
+            reasonParagraphs.push(node);
+          }
+        }
+
+        node = next;
+      }
+
+      if (!reasonParagraphs.length) return;
+
+      const cards = document.createElement("div");
+      cards.className = "reason-cards";
+
+      reasonParagraphs.forEach((paragraph, index) => {
+        const strong = paragraph.querySelector("strong");
+        if (!strong) return;
+
+        const title = strong.textContent.trim();
+        const bodyHTML = paragraph.innerHTML.replace(strong.outerHTML, "").trim();
+
+        const card = document.createElement("article");
+        card.className = "reason-card";
+        card.innerHTML = `
+          <div class="reason-card-head">
+            <span class="reason-card-index">${String(index + 1).padStart(2, "0")}</span>
+            <h4>${title}</h4>
+          </div>
+          <p>${bodyHTML}</p>
+        `;
+
+        cards.appendChild(card);
+      });
+
+      reasonParagraphs[0].before(cards);
+      reasonParagraphs.forEach((paragraph) => paragraph.remove());
+    }
+
+    function observeHeadings(headings) {
+      const tocItems = Array.from(tocEl.querySelectorAll("li"));
+      if (!headings.length || !tocItems.length) return;
+
+      const setActive = (id) => {
+        tocItems.forEach((item) => {
+          item.classList.toggle("active", item.dataset.target === id);
+        });
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+          if (visible.length > 0) {
+            setActive(visible[0].target.id);
+          }
+        },
+        {
+          rootMargin: "-20% 0px -65% 0px",
+          threshold: [0.1, 0.3, 0.6]
+        }
+      );
+
+      headings.forEach((heading) => observer.observe(heading));
+      setActive(headings[0].id);
+    }
+
+    loadHandbook();
+  </script>
+</body>
+</html>
