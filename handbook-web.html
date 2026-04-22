@@ -367,12 +367,23 @@
       border-bottom: 0;
     }
 
-    .reason-cards {
-      display: block;
+    .section-lead-card {
+      margin: 8px 0 18px;
+      padding: 14px 16px;
+      border: 1px solid #d8e5ff;
+      border-radius: 0;
+      background: linear-gradient(180deg, #f8fbff 0%, #f0f6ff 100%);
+      box-shadow: 0 4px 14px rgba(37, 87, 214, 0.08);
+    }
+
+    .doc-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
       margin: 12px 0 24px;
     }
 
-    .reason-card {
+    .doc-card {
       border: 1px solid var(--border);
       border-radius: 0;
       padding: 14px 14px 12px;
@@ -382,19 +393,19 @@
       border-top: 4px solid var(--card-accent, #7ea4ff);
     }
 
-    .reason-card:hover {
+    .doc-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 24px rgba(22, 33, 58, 0.1);
     }
 
-    .reason-card-head {
+    .doc-card-head {
       display: flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 6px;
     }
 
-    .reason-card-index {
+    .doc-card-index {
       font-family: "JetBrains Mono", monospace;
       font-size: 11px;
       font-weight: 700;
@@ -406,48 +417,111 @@
       letter-spacing: 0.05em;
     }
 
-    .reason-card h4 {
+    .doc-card h4 {
       margin: 0;
       font-size: 15px;
       line-height: 1.3;
       color: #11274f;
     }
 
-    .reason-card p {
+    .doc-card p {
       margin: 0;
       color: #2f3e58;
       font-size: 14px;
       line-height: 1.6;
     }
 
-    .reason-card:nth-child(1) {
+    .doc-card.theme-1 {
       --card-accent: #2563eb;
       --card-chip: #e8f0ff;
       background: linear-gradient(180deg, #f5f9ff 0%, #eef4ff 100%);
     }
 
-    .reason-card:nth-child(2) {
+    .doc-card.theme-2 {
       --card-accent: #0f766e;
       --card-chip: #e6faf6;
       background: linear-gradient(180deg, #f4fdfb 0%, #ecfaf6 100%);
     }
 
-    .reason-card:nth-child(3) {
+    .doc-card.theme-3 {
       --card-accent: #7c3aed;
       --card-chip: #f2ebff;
       background: linear-gradient(180deg, #f9f6ff 0%, #f2ecff 100%);
     }
 
-    .reason-card:nth-child(4) {
+    .doc-card.theme-4 {
       --card-accent: #ea580c;
       --card-chip: #fff0e7;
       background: linear-gradient(180deg, #fff8f3 0%, #fff1e8 100%);
     }
 
-    .reason-card:nth-child(5) {
+    .doc-card.theme-5 {
       --card-accent: #be185d;
       --card-chip: #ffeaf3;
       background: linear-gradient(180deg, #fff6fb 0%, #ffeef7 100%);
+    }
+
+    .doc-card-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 20px;
+      display: grid;
+      gap: 10px;
+      counter-reset: section-step;
+    }
+
+    .doc-card-list > li {
+      position: relative;
+      padding: 12px 14px 12px 44px;
+      border: 1px solid #dbe5f4;
+      border-radius: 0;
+      background: linear-gradient(180deg, #fbfdff 0%, #f5f9ff 100%);
+      box-shadow: 0 3px 12px rgba(22, 33, 58, 0.05);
+      margin: 0;
+    }
+
+    .doc-card-list > li::before {
+      position: absolute;
+      left: 13px;
+      top: 13px;
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #204a9f;
+      background: #e9f2ff;
+      border: 1px solid #d2e1ff;
+      content: "•";
+    }
+
+    .doc-card-list.ordered > li::before {
+      counter-increment: section-step;
+      content: counter(section-step);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .doc-card-list > li:nth-child(5n + 1) {
+      border-left: 4px solid #2563eb;
+    }
+
+    .doc-card-list > li:nth-child(5n + 2) {
+      border-left: 4px solid #0f766e;
+    }
+
+    .doc-card-list > li:nth-child(5n + 3) {
+      border-left: 4px solid #7c3aed;
+    }
+
+    .doc-card-list > li:nth-child(5n + 4) {
+      border-left: 4px solid #ea580c;
+    }
+
+    .doc-card-list > li:nth-child(5n + 5) {
+      border-left: 4px solid #be185d;
     }
 
     @media (max-width: 1024px) {
@@ -465,7 +539,7 @@
         padding: 24px;
       }
 
-      .reason-cards {
+      .doc-card-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -525,7 +599,7 @@
           breaks: false
         });
         contentEl.innerHTML = html;
-        enhanceWhyPythonSection();
+        enhanceDocumentDesign();
 
         const headings = contentEl.querySelectorAll("h2, h3");
         headings.forEach((heading) => {
@@ -569,59 +643,109 @@
       });
     }
 
-    function enhanceWhyPythonSection() {
-      const targetHeading = Array.from(contentEl.querySelectorAll("h3")).find(
-        (h) => h.textContent.trim().toLowerCase() === "why python for pharmacists?"
-      );
+    function enhanceDocumentDesign() {
+      const headings = Array.from(contentEl.querySelectorAll("h2, h3"));
+      headings.forEach((heading) => {
+        const sectionNodes = getSectionNodes(heading);
+        if (!sectionNodes.length) return;
 
-      if (!targetHeading) return;
+        styleSectionLead(sectionNodes);
+        convertStrongParagraphsToCards(sectionNodes);
+        convertListsToCards(sectionNodes);
+      });
+    }
 
-      const reasonParagraphs = [];
-      let node = targetHeading.nextElementSibling;
+    function getSectionNodes(heading) {
+      const nodes = [];
+      let node = heading.nextElementSibling;
 
       while (node) {
-        const next = node.nextElementSibling;
-
-        if (node.tagName === "H2" || node.tagName === "H3") break;
-        if (node.tagName === "HR") break;
-
-        if (node.tagName === "P") {
-          const firstChild = node.firstElementChild;
-          if (firstChild && firstChild.tagName === "STRONG") {
-            reasonParagraphs.push(node);
-          }
-        }
-
-        node = next;
+        if (node.tagName === "H2" || node.tagName === "H3" || node.tagName === "HR") break;
+        nodes.push(node);
+        node = node.nextElementSibling;
       }
 
-      if (!reasonParagraphs.length) return;
+      return nodes;
+    }
 
-      const cards = document.createElement("div");
-      cards.className = "reason-cards";
+    function styleSectionLead(sectionNodes) {
+      const firstParagraph = sectionNodes.find(
+        (node) => node.tagName === "P" && !node.querySelector("strong")
+      );
+      if (firstParagraph) {
+        firstParagraph.classList.add("section-lead-card");
+      }
+    }
 
-      reasonParagraphs.forEach((paragraph, index) => {
-        const strong = paragraph.querySelector("strong");
-        if (!strong) return;
+    function convertStrongParagraphsToCards(sectionNodes) {
+      const groups = [];
+      let currentGroup = [];
 
-        const title = strong.textContent.trim();
-        const bodyHTML = paragraph.innerHTML.replace(strong.outerHTML, "").trim();
+      sectionNodes.forEach((node) => {
+        const isStrongParagraph =
+          node.tagName === "P" &&
+          node.firstElementChild &&
+          node.firstElementChild.tagName === "STRONG";
 
-        const card = document.createElement("article");
-        card.className = "reason-card";
-        card.innerHTML = `
-          <div class="reason-card-head">
-            <span class="reason-card-index">${String(index + 1).padStart(2, "0")}</span>
-            <h4>${title}</h4>
-          </div>
-          <p>${bodyHTML}</p>
-        `;
+        if (isStrongParagraph) {
+          currentGroup.push(node);
+          return;
+        }
 
-        cards.appendChild(card);
+        if (currentGroup.length >= 2) {
+          groups.push([...currentGroup]);
+        }
+        currentGroup = [];
       });
 
-      reasonParagraphs[0].before(cards);
-      reasonParagraphs.forEach((paragraph) => paragraph.remove());
+      if (currentGroup.length >= 2) {
+        groups.push([...currentGroup]);
+      }
+
+      groups.forEach((group) => {
+        const grid = document.createElement("div");
+        grid.className = "doc-card-grid";
+
+        group.forEach((paragraph, index) => {
+          const strong = paragraph.querySelector("strong");
+          if (!strong) return;
+
+          const title = strong.textContent.trim();
+          const bodyHTML = paragraph.innerHTML.replace(strong.outerHTML, "").trim();
+          const card = document.createElement("article");
+          const themeClass = `theme-${(index % 5) + 1}`;
+
+          card.className = `doc-card ${themeClass}`;
+          card.innerHTML = `
+            <div class="doc-card-head">
+              <span class="doc-card-index">${String(index + 1).padStart(2, "0")}</span>
+              <h4>${title}</h4>
+            </div>
+            <p>${bodyHTML}</p>
+          `;
+
+          grid.appendChild(card);
+        });
+
+        group[0].before(grid);
+        group.forEach((paragraph) => paragraph.remove());
+      });
+    }
+
+    function convertListsToCards(sectionNodes) {
+      sectionNodes.forEach((node) => {
+        const isList = node.tagName === "UL" || node.tagName === "OL";
+        if (!isList) return;
+
+        if (node.closest("blockquote")) return;
+        if (node.querySelector("pre, table, img")) return;
+
+        const items = Array.from(node.children);
+        if (!items.length || !items.every((item) => item.tagName === "LI")) return;
+
+        node.classList.add("doc-card-list");
+        node.classList.toggle("ordered", node.tagName === "OL");
+      });
     }
 
     function observeHeadings(headings) {
