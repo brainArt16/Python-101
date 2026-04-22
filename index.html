@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python 101 for Pharmacists</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github-dark.min.css" />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-muted: #f7f9fc;
+      --text: #142033;
+      --text-muted: #5a667a;
+      --border: #dce4f1;
+      --brand: #2557d6;
+      --brand-strong: #163d9d;
+      --shadow: 0 12px 32px rgba(22, 33, 58, 0.08);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, sans-serif;
+      line-height: 1.7;
+      min-height: 100%;
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      height: calc(100vh - 40px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 18px 16px;
+      overflow: auto;
+    }
+
+    .brand {
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand h1 {
+      font-size: 15px;
+      line-height: 1.4;
+      margin: 0 0 6px;
+      color: var(--brand-strong);
+      letter-spacing: 0.01em;
+    }
+
+    .brand p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .toc {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+
+    .toc-header {
+      margin-bottom: 14px;
+      padding: 10px 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f4f8ff 100%);
+    }
+
+    .toc-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .toc-title {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: #2a3b5f;
+      text-transform: uppercase;
+    }
+
+    .toc-count {
+      font-size: 11px;
+      font-weight: 600;
+      color: #36548c;
+      background: #e8f0ff;
+      border: 1px solid #d6e4ff;
+      border-radius: 999px;
+      padding: 2px 8px;
+    }
+
+    .toc-subtitle {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .toc a {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      position: relative;
+    }
+
+    .toc-bullet {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      margin-top: 8px;
+      flex-shrink: 0;
+      background: #b7c4db;
+      box-shadow: 0 0 0 3px rgba(183, 196, 219, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .toc-label {
+      min-width: 0;
+      line-height: 1.4;
+    }
+
+    .toc a:hover {
+      color: var(--brand-strong);
+      background: #edf3ff;
+      border-color: #dbe8ff;
+      transform: translateX(2px);
+    }
+
+    .toc .active a {
+      color: #13357f;
+      background: #e8f0ff;
+      border-color: #cfe0ff;
+      font-weight: 600;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .toc .active .toc-bullet {
+      background: var(--brand);
+      box-shadow: 0 0 0 3px rgba(37, 87, 214, 0.2);
+    }
+
+    .toc .level-3 a {
+      padding-left: 22px;
+      font-size: 12px;
+      color: #63708a;
+    }
+
+    .toc .level-3 .toc-bullet {
+      width: 6px;
+      height: 6px;
+      margin-top: 7px;
+    }
+
+    .content-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      min-height: calc(100vh - 40px);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #f9fbff 0%, #f4f7ff 100%);
+    }
+
+    .pill {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--brand-strong);
+      background: #e9f1ff;
+      border: 1px solid #d5e4ff;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.01em;
+    }
+
+    .topbar .meta {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 34px;
+    }
+
+    .loading,
+    .error {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface-muted);
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: #0d1b34;
+      line-height: 1.25;
+      scroll-margin-top: 92px;
+      letter-spacing: -0.01em;
+    }
+
+    h1 {
+      font-size: clamp(32px, 4.2vw, 44px);
+      margin: 0 0 12px;
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: clamp(24px, 2.8vw, 32px);
+      margin-top: 48px;
+      margin-bottom: 14px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
+      font-weight: 750;
+    }
+
+    h3 {
+      font-size: 21px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 16px;
+      color: var(--text);
+    }
+
+    ul,
+    ol {
+      margin: 0 0 18px;
+      padding-left: 22px;
+    }
+
+    li {
+      margin-bottom: 7px;
+    }
+
+    a {
+      color: var(--brand);
+    }
+
+    a:hover {
+      color: var(--brand-strong);
+    }
+
+    blockquote {
+      margin: 18px 0;
+      padding: 10px 14px;
+      border-left: 4px solid #a9c4ff;
+      background: #f3f8ff;
+      border-radius: 0 10px 10px 0;
+      color: #1a305d;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 30px 0;
+    }
+
+    code {
+      font-family: "JetBrains Mono", monospace;
+      background: #eef2f9;
+      border: 1px solid #dce3ef;
+      border-radius: 7px;
+      padding: 1px 6px;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: #0d1117;
+      color: #c9d1d9;
+      border-radius: 12px;
+      padding: 0;
+      overflow-x: auto;
+      border: 1px solid #30363d;
+      margin: 16px 0 24px;
+      box-shadow: 0 8px 20px rgba(13, 17, 23, 0.3);
+      position: relative;
+    }
+
+    pre code {
+      background: transparent;
+      border: 0;
+      color: inherit;
+      padding: 14px 16px 16px;
+      display: block;
+      font-size: 13px;
+      line-height: 1.55;
+      tab-size: 4;
+    }
+
+    .code-block-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 40px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #21262d;
+      background: linear-gradient(180deg, #161b22 0%, #11161d 100%);
+    }
+
+    .code-block-head-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .code-dots {
+      display: inline-flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .code-dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .code-dots span:nth-child(1) { background: #ff5f56; }
+    .code-dots span:nth-child(2) { background: #ffbd2e; }
+    .code-dots span:nth-child(3) { background: #27c93f; }
+
+    .code-lang {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.16);
+      border: 1px solid rgba(147, 197, 253, 0.35);
+      border-radius: 999px;
+      padding: 2px 8px;
+    }
+
+    .copy-code-btn {
+      font-family: Inter, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #dbeafe;
+      background: rgba(37, 99, 235, 0.22);
+      border: 1px solid rgba(96, 165, 250, 0.45);
+      border-radius: 8px;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      flex-shrink: 0;
+    }
+
+    .copy-code-btn:hover {
+      color: #eff6ff;
+      background: rgba(37, 99, 235, 0.36);
+      border-color: rgba(147, 197, 253, 0.7);
+    }
+
+    .copy-code-btn.copied {
+      color: #052e16;
+      background: #bbf7d0;
+      border-color: #86efac;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 16px 0 24px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f6f9ff;
+      font-weight: 650;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .section-lead-card {
+      margin: 8px 0 18px;
+      padding: 14px 16px;
+      border: 1px solid #d8e5ff;
+      border-radius: 0;
+      background: linear-gradient(180deg, #f8fbff 0%, #f0f6ff 100%);
+      box-shadow: 0 4px 14px rgba(37, 87, 214, 0.08);
+    }
+
+    .doc-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 12px 0 24px;
+    }
+
+    .doc-card {
+      border: 1px solid var(--border);
+      border-radius: 0;
+      padding: 14px 14px 12px;
+      background: #f8fbff;
+      box-shadow: 0 6px 18px rgba(22, 33, 58, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border-top: 4px solid var(--card-accent, #7ea4ff);
+    }
+
+    .doc-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(22, 33, 58, 0.1);
+    }
+
+    .doc-card-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .doc-card-index {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--card-accent, #3157b6);
+      background: var(--card-chip, #e8f0ff);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 999px;
+      padding: 2px 7px;
+      letter-spacing: 0.05em;
+    }
+
+    .doc-card h4 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.3;
+      color: #11274f;
+    }
+
+    .doc-card p {
+      margin: 0;
+      color: #2f3e58;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .doc-card.theme-1 {
+      --card-accent: #2563eb;
+      --card-chip: #e8f0ff;
+      background: linear-gradient(180deg, #f5f9ff 0%, #eef4ff 100%);
+    }
+
+    .doc-card.theme-2 {
+      --card-accent: #0f766e;
+      --card-chip: #e6faf6;
+      background: linear-gradient(180deg, #f4fdfb 0%, #ecfaf6 100%);
+    }
+
+    .doc-card.theme-3 {
+      --card-accent: #7c3aed;
+      --card-chip: #f2ebff;
+      background: linear-gradient(180deg, #f9f6ff 0%, #f2ecff 100%);
+    }
+
+    .doc-card.theme-4 {
+      --card-accent: #ea580c;
+      --card-chip: #fff0e7;
+      background: linear-gradient(180deg, #fff8f3 0%, #fff1e8 100%);
+    }
+
+    .doc-card.theme-5 {
+      --card-accent: #be185d;
+      --card-chip: #ffeaf3;
+      background: linear-gradient(180deg, #fff6fb 0%, #ffeef7 100%);
+    }
+
+    .doc-card-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 20px;
+      display: grid;
+      gap: 10px;
+      counter-reset: section-step;
+    }
+
+    .doc-card-list > li {
+      position: relative;
+      padding: 12px 14px 12px 44px;
+      border: 1px solid #dbe5f4;
+      border-radius: 0;
+      background: linear-gradient(180deg, #fbfdff 0%, #f5f9ff 100%);
+      box-shadow: 0 3px 12px rgba(22, 33, 58, 0.05);
+      margin: 0;
+    }
+
+    .doc-card-list > li::before {
+      position: absolute;
+      left: 13px;
+      top: 13px;
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #204a9f;
+      background: #e9f2ff;
+      border: 1px solid #d2e1ff;
+      content: "•";
+    }
+
+    .doc-card-list.ordered > li::before {
+      counter-increment: section-step;
+      content: counter(section-step);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .doc-card-list > li:nth-child(5n + 1) {
+      border-left: 4px solid #2563eb;
+    }
+
+    .doc-card-list > li:nth-child(5n + 2) {
+      border-left: 4px solid #0f766e;
+    }
+
+    .doc-card-list > li:nth-child(5n + 3) {
+      border-left: 4px solid #7c3aed;
+    }
+
+    .doc-card-list > li:nth-child(5n + 4) {
+      border-left: 4px solid #ea580c;
+    }
+
+    .doc-card-list > li:nth-child(5n + 5) {
+      border-left: 4px solid #be185d;
+    }
+
+    .solution-collapse {
+      margin: 14px 0 20px;
+      border: 1px solid #d8e5ff;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #f8fbff 0%, #f2f7ff 100%);
+      box-shadow: 0 6px 18px rgba(37, 87, 214, 0.08);
+      overflow: hidden;
+    }
+
+    .solution-collapse > summary {
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #173a82;
+      font-weight: 700;
+      font-size: 14px;
+      border-bottom: 1px solid transparent;
+    }
+
+    .solution-collapse > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .solution-collapse .collapse-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .solution-collapse .collapse-title::before {
+      content: ">";
+      display: inline-block;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      color: #315eaf;
+      transform-origin: center;
+      transition: transform 0.18s ease;
+    }
+
+    .solution-collapse[open] .collapse-title::before {
+      transform: rotate(90deg);
+    }
+
+    .solution-collapse .collapse-meta {
+      color: #4a618f;
+      background: #e7f0ff;
+      border: 1px solid #d4e3ff;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .solution-collapse[open] > summary {
+      border-bottom-color: #d7e4ff;
+      background: #edf3ff;
+    }
+
+    .collapse-content {
+      padding: 12px 14px 6px;
+      background: #ffffff;
+    }
+
+    .collapse-content > :first-child {
+      margin-top: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        max-height: 42vh;
+      }
+
+      main {
+        padding: 24px;
+      }
+
+      .doc-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Python 101 for Pharmacists</h1>
+        <p>Modern reader view</p>
+      </div>
+      <div class="toc-header">
+        <div class="toc-title-row">
+          <p class="toc-title">Contents</p>
+          <span class="toc-count" id="tocCount">0</span>
+        </div>
+        <p class="toc-subtitle">Follow your progress chapter by chapter.</p>
+      </div>
+      <ul class="toc" id="toc"></ul>
+    </aside>
+
+    <section class="content-wrap">
+      <div class="topbar">
+        <span class="pill">Interactive Handbook</span>
+        <span class="meta">Source: <code>handbook.md</code></span>
+      </div>
+      <main id="content">
+        <div class="loading">Loading handbook content...</div>
+      </main>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/sql.min.js"></script>
+  <script>
+    const contentEl = document.getElementById("content");
+    const tocEl = document.getElementById("toc");
+    const tocCountEl = document.getElementById("tocCount");
+
+    const slugify = (text) =>
+      text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-");
+
+    async function loadHandbook() {
+      try {
+        const response = await fetch("./handbook.md");
+        if (!response.ok) {
+          throw new Error("Could not load handbook.md");
+        }
+
+        const markdown = await response.text();
+        const html = marked.parse(markdown, {
+          gfm: true,
+          breaks: false
+        });
+        contentEl.innerHTML = html;
+        enhanceCollapsibleSolutionBlocks();
+        applySyntaxHighlighting();
+        enhanceDocumentDesign();
+        addCopyButtonsToCodeBlocks();
+
+        const headings = contentEl.querySelectorAll("h2, h3");
+        headings.forEach((heading) => {
+          if (!heading.id) {
+            heading.id = slugify(heading.textContent);
+          }
+        });
+
+        buildToc(headings);
+        observeHeadings(headings);
+      } catch (err) {
+        contentEl.innerHTML =
+          '<div class="error"><strong>Could not load <code>handbook.md</code>.</strong><br/>Open this folder in a local server first:<br/><code>python3 -m http.server</code><br/>Then visit <code>http://localhost:8000/handbook-web.html</code>.</div>';
+      }
+    }
+
+    function buildToc(headings) {
+      tocEl.innerHTML = "";
+      tocCountEl.textContent = headings.length;
+
+      headings.forEach((heading) => {
+        const li = document.createElement("li");
+        li.className = heading.tagName.toLowerCase() === "h3" ? "level-3" : "level-2";
+        li.dataset.target = heading.id;
+
+        const link = document.createElement("a");
+        link.href = "#" + heading.id;
+
+        const bullet = document.createElement("span");
+        bullet.className = "toc-bullet";
+        bullet.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("span");
+        label.className = "toc-label";
+        label.textContent = heading.textContent;
+
+        link.appendChild(bullet);
+        link.appendChild(label);
+        li.appendChild(link);
+        tocEl.appendChild(li);
+      });
+    }
+
+    function enhanceDocumentDesign() {
+      const headings = Array.from(contentEl.querySelectorAll("h2, h3"));
+      headings.forEach((heading) => {
+        const sectionNodes = getSectionNodes(heading);
+        if (!sectionNodes.length) return;
+
+        styleSectionLead(sectionNodes);
+        convertStrongParagraphsToCards(sectionNodes);
+        convertListsToCards(sectionNodes);
+      });
+    }
+
+    function getSectionNodes(heading) {
+      const nodes = [];
+      let node = heading.nextElementSibling;
+
+      while (node) {
+        if (node.tagName === "H2" || node.tagName === "H3" || node.tagName === "HR") break;
+        nodes.push(node);
+        node = node.nextElementSibling;
+      }
+
+      return nodes;
+    }
+
+    function styleSectionLead(sectionNodes) {
+      const firstParagraph = sectionNodes.find(
+        (node) => node.tagName === "P" && !node.querySelector("strong")
+      );
+      if (firstParagraph) {
+        firstParagraph.classList.add("section-lead-card");
+      }
+    }
+
+    function convertStrongParagraphsToCards(sectionNodes) {
+      const groups = [];
+      let currentGroup = [];
+
+      sectionNodes.forEach((node) => {
+        const isStrongParagraph =
+          node.tagName === "P" &&
+          node.firstElementChild &&
+          node.firstElementChild.tagName === "STRONG";
+
+        if (isStrongParagraph) {
+          currentGroup.push(node);
+          return;
+        }
+
+        if (currentGroup.length >= 2) {
+          groups.push([...currentGroup]);
+        }
+        currentGroup = [];
+      });
+
+      if (currentGroup.length >= 2) {
+        groups.push([...currentGroup]);
+      }
+
+      groups.forEach((group) => {
+        const grid = document.createElement("div");
+        grid.className = "doc-card-grid";
+
+        group.forEach((paragraph, index) => {
+          const strong = paragraph.querySelector("strong");
+          if (!strong) return;
+
+          const title = strong.textContent.trim();
+          const bodyHTML = paragraph.innerHTML.replace(strong.outerHTML, "").trim();
+          const card = document.createElement("article");
+          const themeClass = `theme-${(index % 5) + 1}`;
+
+          card.className = `doc-card ${themeClass}`;
+          card.innerHTML = `
+            <div class="doc-card-head">
+              <span class="doc-card-index">${String(index + 1).padStart(2, "0")}</span>
+              <h4>${title}</h4>
+            </div>
+            <p>${bodyHTML}</p>
+          `;
+
+          grid.appendChild(card);
+        });
+
+        group[0].before(grid);
+        group.forEach((paragraph) => paragraph.remove());
+      });
+    }
+
+    function convertListsToCards(sectionNodes) {
+      sectionNodes.forEach((node) => {
+        const isList = node.tagName === "UL" || node.tagName === "OL";
+        if (!isList) return;
+
+        if (node.closest("blockquote")) return;
+        if (node.querySelector("pre, table, img")) return;
+
+        const items = Array.from(node.children);
+        if (!items.length || !items.every((item) => item.tagName === "LI")) return;
+
+        node.classList.add("doc-card-list");
+        node.classList.toggle("ordered", node.tagName === "OL");
+      });
+    }
+
+    function shouldCollapseNode(node) {
+      const text = node.textContent.trim().replace(/\s+/g, " ").toLowerCase();
+
+      const isTargetText =
+        /complete\s+reference\s+solutiona?/.test(text) ||
+        /complete\s+reference\s+solution/.test(text) ||
+        /complete\s+working\s+solution/.test(text) ||
+        /expected\s+output/.test(text);
+
+      if (!isTargetText) return false;
+
+      const isHeading = /^H[2-6]$/.test(node.tagName);
+      const isBoldParagraph =
+        node.tagName === "P" &&
+        node.firstElementChild &&
+        node.firstElementChild.tagName === "STRONG";
+
+      return isHeading || isBoldParagraph;
+    }
+
+    function getTriggerTitle(node) {
+      const raw = node.textContent.trim().replace(/\s+/g, " ");
+      return raw.replace(/:+$/, "");
+    }
+
+    function getHeadingLevel(node) {
+      if (!/^H[2-6]$/.test(node.tagName)) return 6;
+      return Number(node.tagName.slice(1));
+    }
+
+    function collectCollapsibleContent(triggerNode, triggerLevel) {
+      const nodes = [];
+      let current = triggerNode.nextElementSibling;
+
+      while (current) {
+        const next = current.nextElementSibling;
+
+        if (current.tagName === "HR") break;
+
+        if (/^H[2-6]$/.test(current.tagName)) {
+          const level = Number(current.tagName.slice(1));
+          if (level <= triggerLevel) break;
+        }
+
+        nodes.push(current);
+        current = next;
+      }
+
+      return nodes;
+    }
+
+    function enhanceCollapsibleSolutionBlocks() {
+      const allNodes = Array.from(contentEl.querySelectorAll("h2, h3, h4, h5, h6, p"));
+
+      allNodes.forEach((node) => {
+        if (!node.isConnected) return;
+        if (!shouldCollapseNode(node)) return;
+        if (node.closest(".solution-collapse")) return;
+
+        const triggerLevel = getHeadingLevel(node);
+        const title = getTriggerTitle(node);
+        const contentNodes = collectCollapsibleContent(node, triggerLevel);
+        if (!contentNodes.length) return;
+
+        const details = document.createElement("details");
+        details.className = "solution-collapse";
+
+        const summary = document.createElement("summary");
+        summary.innerHTML = `
+          <span class="collapse-title">${title}</span>
+          <span class="collapse-meta">Click to expand</span>
+        `;
+
+        const body = document.createElement("div");
+        body.className = "collapse-content";
+        contentNodes.forEach((entry) => body.appendChild(entry));
+
+        details.appendChild(summary);
+        details.appendChild(body);
+        node.replaceWith(details);
+      });
+    }
+
+    function applySyntaxHighlighting() {
+      if (window.hljs && hljs.getLanguage("python")) {
+        hljs.registerAliases(["py"], { languageName: "python" });
+      }
+      const codeNodes = contentEl.querySelectorAll("pre code");
+      codeNodes.forEach((code) => {
+        if (window.hljs) {
+          hljs.highlightElement(code);
+        }
+      });
+    }
+
+    function getCodeLanguage(codeNode) {
+      const className = codeNode.className || "";
+      const match = className.match(/language-([a-z0-9_+-]+)/i);
+      if (!match) return "text";
+      return match[1].toLowerCase();
+    }
+
+    function addCopyButtonsToCodeBlocks() {
+      const codeBlocks = Array.from(contentEl.querySelectorAll("pre"));
+
+      codeBlocks.forEach((pre) => {
+        const code = pre.querySelector("code");
+        if (!code) return;
+        if (pre.querySelector(".copy-code-btn")) return;
+
+        const language = getCodeLanguage(code);
+
+        const head = document.createElement("div");
+        head.className = "code-block-head";
+
+        const left = document.createElement("div");
+        left.className = "code-block-head-left";
+
+        const dots = document.createElement("div");
+        dots.className = "code-dots";
+        dots.innerHTML = "<span></span><span></span><span></span>";
+
+        const langBadge = document.createElement("span");
+        langBadge.className = "code-lang";
+        langBadge.textContent = language;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "copy-code-btn";
+        btn.textContent = "Copy";
+        btn.setAttribute("aria-label", "Copy code snippet");
+
+        btn.addEventListener("click", async () => {
+          const text = code.innerText;
+          const originalText = btn.textContent;
+
+          try {
+            await navigator.clipboard.writeText(text);
+            btn.textContent = "Copied";
+            btn.classList.add("copied");
+          } catch (error) {
+            btn.textContent = "Failed";
+            btn.classList.remove("copied");
+          }
+
+          window.setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove("copied");
+          }, 1300);
+        });
+
+        left.appendChild(dots);
+        left.appendChild(langBadge);
+        head.appendChild(left);
+        head.appendChild(btn);
+        pre.prepend(head);
+      });
+    }
+
+    function observeHeadings(headings) {
+      const tocItems = Array.from(tocEl.querySelectorAll("li"));
+      if (!headings.length || !tocItems.length) return;
+
+      const setActive = (id) => {
+        tocItems.forEach((item) => {
+          item.classList.toggle("active", item.dataset.target === id);
+        });
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+          if (visible.length > 0) {
+            setActive(visible[0].target.id);
+          }
+        },
+        {
+          rootMargin: "-20% 0px -65% 0px",
+          threshold: [0.1, 0.3, 0.6]
+        }
+      );
+
+      headings.forEach((heading) => observer.observe(heading));
+      setActive(headings[0].id);
+    }
+
+    loadHandbook();
+  </script>
+</body>
+</html>
