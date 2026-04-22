@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github-dark.min.css" />
   <style>
     :root {
       --bg: #f4f7fb;
@@ -321,15 +322,14 @@
     }
 
     pre {
-      background: #0f172a;
-      color: #e2e8f0;
+      background: #0d1117;
+      color: #c9d1d9;
       border-radius: 12px;
-      padding: 16px;
-      padding-top: 44px;
+      padding: 0;
       overflow-x: auto;
-      border: 1px solid #1e293b;
+      border: 1px solid #30363d;
       margin: 16px 0 24px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      box-shadow: 0 8px 20px rgba(13, 17, 23, 0.3);
       position: relative;
     }
 
@@ -337,14 +337,62 @@
       background: transparent;
       border: 0;
       color: inherit;
-      padding: 0;
+      padding: 14px 16px 16px;
+      display: block;
       font-size: 13px;
+      line-height: 1.55;
+      tab-size: 4;
+    }
+
+    .code-block-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 40px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #21262d;
+      background: linear-gradient(180deg, #161b22 0%, #11161d 100%);
+    }
+
+    .code-block-head-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .code-dots {
+      display: inline-flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .code-dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .code-dots span:nth-child(1) { background: #ff5f56; }
+    .code-dots span:nth-child(2) { background: #ffbd2e; }
+    .code-dots span:nth-child(3) { background: #27c93f; }
+
+    .code-lang {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.16);
+      border: 1px solid rgba(147, 197, 253, 0.35);
+      border-radius: 999px;
+      padding: 2px 8px;
     }
 
     .copy-code-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
       font-family: Inter, sans-serif;
       font-size: 12px;
       font-weight: 600;
@@ -355,6 +403,7 @@
       padding: 5px 10px;
       cursor: pointer;
       transition: all 0.18s ease;
+      flex-shrink: 0;
     }
 
     .copy-code-btn:hover {
@@ -604,6 +653,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/sql.min.js"></script>
   <script>
     const contentEl = document.getElementById("content");
     const tocEl = document.getElementById("toc");
@@ -629,6 +684,7 @@
           breaks: false
         });
         contentEl.innerHTML = html;
+        applySyntaxHighlighting();
         enhanceDocumentDesign();
         addCopyButtonsToCodeBlocks();
 
@@ -779,13 +835,48 @@
       });
     }
 
+    function applySyntaxHighlighting() {
+      if (window.hljs && hljs.getLanguage("python")) {
+        hljs.registerAliases(["py"], { languageName: "python" });
+      }
+      const codeNodes = contentEl.querySelectorAll("pre code");
+      codeNodes.forEach((code) => {
+        if (window.hljs) {
+          hljs.highlightElement(code);
+        }
+      });
+    }
+
+    function getCodeLanguage(codeNode) {
+      const className = codeNode.className || "";
+      const match = className.match(/language-([a-z0-9_+-]+)/i);
+      if (!match) return "text";
+      return match[1].toLowerCase();
+    }
+
     function addCopyButtonsToCodeBlocks() {
       const codeBlocks = Array.from(contentEl.querySelectorAll("pre"));
 
       codeBlocks.forEach((pre) => {
-        if (pre.querySelector(".copy-code-btn")) return;
         const code = pre.querySelector("code");
         if (!code) return;
+        if (pre.querySelector(".copy-code-btn")) return;
+
+        const language = getCodeLanguage(code);
+
+        const head = document.createElement("div");
+        head.className = "code-block-head";
+
+        const left = document.createElement("div");
+        left.className = "code-block-head-left";
+
+        const dots = document.createElement("div");
+        dots.className = "code-dots";
+        dots.innerHTML = "<span></span><span></span><span></span>";
+
+        const langBadge = document.createElement("span");
+        langBadge.className = "code-lang";
+        langBadge.textContent = language;
 
         const btn = document.createElement("button");
         btn.type = "button";
@@ -812,7 +903,11 @@
           }, 1300);
         });
 
-        pre.appendChild(btn);
+        left.appendChild(dots);
+        left.appendChild(langBadge);
+        head.appendChild(left);
+        head.appendChild(btn);
+        pre.prepend(head);
       });
     }
 
