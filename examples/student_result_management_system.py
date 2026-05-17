@@ -132,3 +132,7 @@ so that excellent students are recognized.
 
 ---
 """
+# Demonstrate code reusability (not a perfect example, but it shows how to reuse a function from another file)
+from smart_grocery_bill_calculator import welcome_message
+
+welcome_message("Student Result Management System")

@@ -32,9 +32,10 @@ for x in range(num):
         "price": price,
         "quantity": quantity
     }
-    
+
+
     product_list.append(product_dict)
-    
+
     # cancel = input("Enter 99 to cancel: ")
 
     # if cancel == "99":
@@ -67,3 +68,4 @@ print(product_list)
 # Total: {total}
 # """
 # print(receipt)
+
