@@ -522,7 +522,7 @@ def check_balance(account):
 
 # 7. View Transaction History
 def transaction_history(account):
-    print("Transaction History:")
+    print("###### Transaction History ######")
     return account["transactions"]
 
 # 8. Change PIN
@@ -544,13 +544,6 @@ def main():
     while True:
         print("\n1. Register")
         print("2. Login")
-        print("3. Deposit")
-        print("4. Withdraw")
-        print("5. Send Money")
-        print("6. Check Balance")
-        print("7. Transaction History")
-        print("8. Change PIN")
-        print("9. Logout")
         print("10. Exit")
 
         choice = input("Select an option: ")
