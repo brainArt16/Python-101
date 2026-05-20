@@ -443,3 +443,162 @@ mobile_transaction/
 └── utils.py
 ```
 """
+
+user_accounts = []  # List to store user accounts
+
+# 1. Register Account
+def register_account():
+    full_name = input("Enter your full name: ")
+    phone_number = input("Enter your phone number: ")
+    pin = input("Create a 4-digit PIN: ")
+
+    account = {
+        "name": full_name,
+        "phone": phone_number,
+        "pin": pin,
+        "balance": 0,
+        "transactions": []
+    }
+
+    user_accounts.append(account)
+    print("Account created successfully!")
+    
+# 2. Login to Account
+def login():
+    phone_number = input("Enter your phone number: ")
+    pin = input("Enter your PIN: ")
+
+    for account in user_accounts:
+        if account["phone"] == phone_number and account["pin"] == pin:
+            print("Login successful!")
+            return account  # Return the logged-in account
+
+    print("Invalid credentials. Please try again.")
+    return None
+
+
+# 3. Deposit Money
+def deposit_money(account):
+    amount = float(input("Enter amount to deposit: "))
+    account["balance"] += amount
+    account["transactions"].append(f"Deposited: {amount}")
+    return account["balance"]
+
+# 4. Withdraw Money
+def withdraw_money(account):
+    amount = float(input("Enter amount to withdraw: "))
+    if account["balance"] >= amount:
+        account["balance"] -= amount
+        account["transactions"].append(f"Withdrew: {amount}")
+        print("Withdrawal successful!")
+    else:
+        print("Insufficient balance.")
+    return account["balance"]
+
+# 5. Send Money
+def send_money(account):
+    receiver_phone = input("Enter receiver's phone number: ")
+    amount = float(input("Enter amount to send: "))
+
+    for receiver in user_accounts:
+        if receiver["phone"] == receiver_phone:
+            if account["balance"] >= amount:
+                account["balance"] -= amount
+                receiver["balance"] += amount
+                account["transactions"].append(f"Sent {amount} to {receiver_phone}")
+                receiver["transactions"].append(f"Received {amount} from {account['phone']}")
+                print("Transfer successful!")
+            else:
+                print("Insufficient balance.")
+            return account["balance"]
+
+    print("Receiver not found.")
+    return account["balance"]
+
+
+# 6. Check Balance
+def check_balance(account):
+    return account["balance"]
+
+# 7. View Transaction History
+def transaction_history(account):
+    print("Transaction History:")
+    return account["transactions"]
+
+# 8. Change PIN
+def change_pin(account):
+    old_pin = input("Enter your current PIN: ")
+    if old_pin == account["pin"]:
+        new_pin = input("Enter your new PIN: ")
+        account["pin"] = new_pin
+        print("PIN changed successfully!")
+    else:
+        print("Incorrect current PIN.")
+        
+# 9. Logout
+def logout():
+    print("Logged out successfully!")
+    
+    
+def main():
+    while True:
+        print("\n1. Register")
+        print("2. Login")
+        print("3. Deposit")
+        print("4. Withdraw")
+        print("5. Send Money")
+        print("6. Check Balance")
+        print("7. Transaction History")
+        print("8. Change PIN")
+        print("9. Logout")
+        print("10. Exit")
+
+        choice = input("Select an option: ")
+
+        if choice == "1":
+            register_account()
+        elif choice == "2":
+            account = login()
+            if account:
+                while True:
+                    print("\n1. Deposit")
+                    print("2. Withdraw")
+                    print("3. Send Money")
+                    print("4. Check Balance")
+                    print("5. Transaction History")
+                    print("6. Change PIN")
+                    print("7. Logout")
+
+                    sub_choice = input("Select an option: ")
+
+                    if sub_choice == "1":
+                        new_balance = deposit_money(account)
+                        print(f"New Balance: {new_balance}")
+                    elif sub_choice == "2":
+                        new_balance = withdraw_money(account)
+                        print(f"New Balance: {new_balance}")
+                    elif sub_choice == "3":
+                        new_balance = send_money(account)
+                        print(f"New Balance: {new_balance}")
+                    elif sub_choice == "4":
+                        balance = check_balance(account)
+                        print(f"Current Balance: {balance}")
+                    elif sub_choice == "5":
+                        transactions = transaction_history(account)
+                        for transaction in transactions:
+                            print(transaction)
+                    elif sub_choice == "6":
+                        change_pin(account)
+                    elif sub_choice == "7":
+                        logout()
+                        break
+                    else:
+                        print("Invalid option.")
+        elif choice == "10":
+            print("Exiting the system.")
+            break
+        else:
+            print("Invalid option.")
+            
+if __name__ == "__main__":
+    main()
